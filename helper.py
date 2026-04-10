@@ -108,4 +108,25 @@ class GrayscaleAlgorithm:
                 pixels[j, i] = (gray, gray, gray, a)
         
         return img_object_copy
+    
+    def desaturation(self):
+        """
+        Convert image to grayscale using the desaturation method.
         
+        This method creates a copy of the image and calculates the grayscale value
+        as the average of the maximum and minimum RGB values. This method is useful
+        for preserving highlights and shadows in the image.
+        
+        Returns:
+            img_object_copy (PIL.Image): A new grayscale image object.
+        """
+        
+        img_object_copy, width, height, pixels = self._image_deep_copy()
+        
+        for i in range(height):
+            for j in range(width):
+                r, g, b, a = pixels[j, i]
+                gray = int((max(r, g, b) + min(r, g, b)) / 2)
+                pixels[j, i] = (gray, gray, gray, a)
+        
+        return img_object_copy
