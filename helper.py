@@ -158,3 +158,41 @@ class GrayscaleAlgorithm:
                 pixels[j, i] = (gray, gray, gray, a)
         
         return img_object_copy
+
+    def single_color_channel(self, color="R"):
+        """
+        Convert image to grayscale by extracting a single color channel.
+        
+        This method creates a copy of the image and sets the grayscale value 
+        to the value of the specified color channel (Red, Green, or Blue) 
+        for each pixel.
+        
+        Args:
+            color (str): The color channel to extract ("R", "G", or "B"). 
+                        Default: "R".
+        
+        Returns:
+            img_object_copy (PIL.Image): A new grayscale image object based on the selected channel.
+            
+        Raises:
+            ValueError: If the color argument is not one of ["R", "G", "B"].
+        """
+        color_option = ["R", "G", "B"]
+
+        if color not in color_option:
+            raise ValueError(f"Invalid color option: {color}. Must be one of {color_option}")
+
+        img_object_copy, width, height, pixels = self._image_deep_copy()
+        
+        for i in range(height):
+            for j in range(width):
+                r, g, b, a = pixels[j, i]
+                if color == "R":
+                    gray = r
+                elif color == "G":
+                    gray = g
+                else:
+                    gray = b
+                pixels[j, i] = (gray, gray, gray, a)
+        
+        return img_object_copy
