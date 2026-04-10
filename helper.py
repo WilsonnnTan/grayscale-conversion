@@ -44,6 +44,26 @@ class GrayscaleAlgorithm:
             img_object (PIL.Image): The PIL Image object to convert.
         """
         self.img_object = img_object
+        
+    def _image_deep_copy(self):
+        """
+        Create a deep copy of the image object and extract its properties.
+        
+        This is a private helper method that creates an independent copy of the
+        original image to avoid modifying the source image when applying filters.
+        
+        Returns:
+            tuple: A tuple containing:
+                - img_object_copy (PIL.Image): A deep copy of the image.
+                - width (int): The width of the image in pixels.
+                - height (int): The height of the image in pixels.
+                - pixels: PIL Image pixel data object for the copied image.
+        """
+        img_object_copy = copy.deepcopy(self.img_object)
+        width, height = img_object_copy.size
+        pixels = img_object_copy.load()
+        
+        return (img_object_copy, width, height, pixels)
     
     def averaging(self):
         """
@@ -56,9 +76,8 @@ class GrayscaleAlgorithm:
         Returns:
             img_object_copy (PIL.Image): A new grayscale image object.
         """
-        img_object_copy = copy.deepcopy(self.img_object)
-        width, height = img_object_copy.size
-        pixels = img_object_copy.load()
+        
+        img_object_copy, width, height, pixels = self._image_deep_copy()
         
         for i in range(height):
             for j in range(width):
@@ -67,3 +86,26 @@ class GrayscaleAlgorithm:
                 pixels[j, i] = (gray, gray, gray, a)
         
         return img_object_copy
+    
+    def luma(self):
+        """
+        Convert image to grayscale using the ITU-R BT.709 recommendation (luma weightings).
+        
+        This method creates a copy of the image and applies human perception-based
+        color weights (red: 0.2126, green: 0.7152, blue: 0.0722) to produce a more
+        accurate grayscale representation compared to simple averaging.
+        
+        Returns:
+            img_object_copy (PIL.Image): A new grayscale image object.
+        """
+        
+        img_object_copy, width, height, pixels = self._image_deep_copy()
+        
+        for i in range(height):
+            for j in range(width):
+                r, g, b, a = pixels[j, i]
+                gray = int(r * 0.2126 + g * 0.7152 + b * 0.0722)
+                pixels[j, i] = (gray, gray, gray, a)
+        
+        return img_object_copy
+        
