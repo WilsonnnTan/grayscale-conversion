@@ -196,3 +196,37 @@ class GrayscaleAlgorithm:
                 pixels[j, i] = (gray, gray, gray, a)
         
         return img_object_copy
+    
+    def custom_gray_shades(self, number_of_shades=2):
+        """
+        Convert image to grayscale with a specific number of gray levels (posterization).
+        
+        This method reduces the image's color palette to a specific number of 
+        equally spaced grayscale shades. For example, 2 shades result in a 
+        black and white (monochrome) image.
+        
+        Args:
+            number_of_shades (int): The number of gray levels to use (between 2 and 256). 
+                                   Default: 2.
+        
+        Returns:
+            img_object_copy (PIL.Image): A new image object with reduced grayscale shades.
+            
+        Raises:
+            ValueError: If number_of_shades is not between 2 and 256.
+        """
+        if number_of_shades < 2 or number_of_shades > 256:
+            raise ValueError(f"number_of_shades must be between 2 and 256, got {number_of_shades}")
+
+        conversion_factor = 255 / (number_of_shades - 1)
+
+        img_object_copy, width, height, pixels = self._image_deep_copy()
+        
+        for i in range(height):
+            for j in range(width):
+                r, g, b, a = pixels[j, i]
+                average_value = (r + g + b) / 3
+                gray = int(int((average_value / conversion_factor) + 0.5) * conversion_factor)
+                pixels[j, i] = (gray, gray, gray, a)
+        
+        return img_object_copy
