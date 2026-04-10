@@ -130,3 +130,31 @@ class GrayscaleAlgorithm:
                 pixels[j, i] = (gray, gray, gray, a)
         
         return img_object_copy
+    
+    def decomposition(self, is_max=True):
+        """
+        Convert image to grayscale using the decomposition method.
+        
+        This method creates a copy of the image and extracts either the maximum
+        or minimum RGB value for each pixel. The max decomposition preserves highlights,
+        while min decomposition preserves shadows.
+        
+        Args:
+            is_max (bool): If True, uses maximum RGB value; if False, uses minimum RGB value.
+                          Default: True.
+        
+        Returns:
+            img_object_copy (PIL.Image): A new grayscale image object.
+        """
+        img_object_copy, width, height, pixels = self._image_deep_copy()
+        
+        for i in range(height):
+            for j in range(width):
+                r, g, b, a = pixels[j, i]
+                if (is_max):
+                    gray = int(max(r, g, b))
+                else:
+                    gray = int(min(r, g, b))
+                pixels[j, i] = (gray, gray, gray, a)
+        
+        return img_object_copy
